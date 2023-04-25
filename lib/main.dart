@@ -1,5 +1,3 @@
-// ignore_for_file: depend_on_referenced_packages, unused_import, avoid_function_literals_in_foreach_calls, unnecessary_null_comparison, avoid_unnecessary_containers
-
 import 'package:ar_flutter_plugin/managers/ar_location_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_session_manager.dart';
 import 'package:ar_flutter_plugin/managers/ar_object_manager.dart';
@@ -57,17 +55,13 @@ class ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
                 children: [
                   ElevatedButton(
                       onPressed: onRemoveEverything,
-                      child: const Text("Remove Everything")),
+                      child: const Text("Remove objects")),
                 ]),
           )
         ])));
   }
 
-  void onARViewCreated(
-      ARSessionManager arSessionManager,
-      ARObjectManager arObjectManager,
-      ARAnchorManager arAnchorManager,
-      ARLocationManager arLocationManager) {
+  void onARViewCreated(ARSessionManager arSessionManager, ARObjectManager arObjectManager, ARAnchorManager arAnchorManager, ARLocationManager arLocationManager) {
     this.arSessionManager = arSessionManager;
     this.arObjectManager = arObjectManager;
     this.arAnchorManager = arAnchorManager;
@@ -75,7 +69,6 @@ class ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     this.arSessionManager!.onInitialize(
           showFeaturePoints: false,
           showPlanes: true,
-          customPlaneTexturePath: "Images/triangle.png",
           showWorldOrigin: true,
         );
     this.arObjectManager!.onInitialize();
@@ -96,24 +89,20 @@ class ObjectsOnPlanesWidgetState extends State<ObjectsOnPlanesWidget> {
     arSessionManager!.onError("Tapped $number node(s)");
   }
 
-  Future<void> onPlaneOrPointTapped(
-      List<ARHitTestResult> hitTestResults) async {
-    var singleHitTestResult = hitTestResults.firstWhere(
-        (hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
+  Future<void> onPlaneOrPointTapped(List<ARHitTestResult> hitTestResults) async {
+    var singleHitTestResult = hitTestResults.firstWhere((hitTestResult) => hitTestResult.type == ARHitTestResultType.plane);
     if (singleHitTestResult != null) {
-      var newAnchor =
-          ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
+      var newAnchor = ARPlaneAnchor(transformation: singleHitTestResult.worldTransform);
       bool? didAddAnchor = await arAnchorManager!.addAnchor(newAnchor);
       if (didAddAnchor!) {
         anchors.add(newAnchor);
         var newNode = ARNode(
             type: NodeType.webGLB,
-            uri: "https://drive.google.com/file/d/1DWIX9RKfxlvP-ZY2NSpL_OVA9IgUZjK1/view?usp=share_link",
+            uri: "https://github.com/olegdubovskii/ar_lab/raw/main/Duck.glb",
             scale: Vector3(0.2, 0.2, 0.2),
             position: Vector3(0.0, 0.0, 0.0),
             rotation: Vector4(1.0, 0.0, 0.0, 0.0));
-        bool? didAddNodeToAnchor =
-            await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
+        bool? didAddNodeToAnchor = await arObjectManager!.addNode(newNode, planeAnchor: newAnchor);
         if (didAddNodeToAnchor!) {
           nodes.add(newNode);
         } else {
